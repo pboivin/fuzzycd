@@ -49,7 +49,7 @@ optional arguments:
 Something/  ThreeTest/  TwoPlusTwo/  four/  one/  three/  two/
 
 # Change working directory
-~/test $ f plus
+~/test $ f tpt
 
 # Current working directory is now `~/test/TwoPlusTwo`
 ```
