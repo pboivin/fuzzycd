@@ -1,5 +1,5 @@
 echo '
-FUZZYCD_PYTHON="python"
+FUZZYCD_PYTHON="'$(which python)'"
 FUZZYCD_SCRIPT="'$PWD'/fuzzycd.py"
 
 function f() {
