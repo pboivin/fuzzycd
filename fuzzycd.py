@@ -31,9 +31,10 @@ def filter_paths(
         path_is_directory(item, follow_links)]
 
 
-def print_directories(directories):
+def print_directories(directories, as_list=False):
+    separator = "\n" if as_list else " "
     dirs_output = [d + "/" for d in directories]
-    dirs_output = " ".join(dirs_output)
+    dirs_output = separator.join(dirs_output)
     print(dirs_output)
 
 
@@ -59,7 +60,7 @@ def main(config):
             print("No match")
             exit(1)
     else:
-        print_directories(directories)
+        print_directories(directories, config["as_list"])
         exit(0)
 
 
@@ -67,12 +68,14 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Some app...")
     parser.add_argument("-n", "--no-links", action="store_true")
     parser.add_argument("-a", "--show-hidden", action="store_true")
+    parser.add_argument("-l", "--list", action="store_true")
     parser.add_argument("search", nargs="?")
     args = parser.parse_args()
 
     app_config = {
         "follow_links": not args.no_links,
         "show_hidden": args.show_hidden,
+        "as_list": args.list,
         "search": args.search,
     }
 
