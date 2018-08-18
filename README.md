@@ -42,6 +42,8 @@ optional arguments:
 **Example**
 
 ```
+# Current working directory is `~/test`
+
 # Print directories in curent working directory
 ~/test $ f
 Something/  ThreeTest/  TwoPlusTwo/  four/  one/  three/  two/
@@ -49,7 +51,7 @@ Something/  ThreeTest/  TwoPlusTwo/  four/  one/  three/  two/
 # Change working directory
 ~/test $ f plus
 
-# Current working directory is now `TwoPlusTwo`
+# Current working directory is now `~/test/TwoPlusTwo`
 ```
 
 
