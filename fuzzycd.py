@@ -40,7 +40,7 @@ def print_directories(directories, as_list=False):
 
 def get_best_match(search, directories):
     match = process.extractOne(search, directories)
-    if match[1] > 0:
+    if match and match[1] > 0:
         return match[0]
     return None
 
