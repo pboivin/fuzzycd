@@ -35,7 +35,7 @@ def filter_paths(
 
 
 def print_directories(directories, as_list=False):
-    separator = "\n" if as_list else " "
+    separator = "\n" if as_list else "  "
     dirs_output = [d + "/" for d in directories]
     dirs_output = separator.join(dirs_output)
     print(dirs_output)
@@ -52,10 +52,18 @@ def get_config_from_command_args():
     parser = argparse.ArgumentParser(
         description="Change the current working directory using "
         "fuzzy string matching ")
-    parser.add_argument("-n", "--no-links", action="store_true")
-    parser.add_argument("-a", "--include-hidden", action="store_true")
-    parser.add_argument("-l", "--list", action="store_true")
-    parser.add_argument("search", nargs="?")
+    parser.add_argument(
+        "-n", "--no-links", action="store_true",
+        help="ignore symlinks")
+    parser.add_argument(
+        "-a", "--include-hidden", action="store_true",
+        help="include hidden files (ignored by default)")
+    parser.add_argument(
+        "-l", "--list", action="store_true",
+        help="use a newline-separated listing format")
+    parser.add_argument(
+        "search", nargs="?",
+        help="the string to use for fuzzy matching")
     args = parser.parse_args()
 
     return AppConfig(
