@@ -2,12 +2,15 @@ from __future__ import print_function
 import argparse
 import os
 from os import path
+from collections import namedtuple
 
 from fuzzywuzzy import process
 
-
 FOLLOW_LINKS_DEFAULT = True
-SHOW_HIDDEN_DEFAULT = False
+INCLUDE_HIDDEN_DEFAULT = False
+
+AppConfig = namedtuple("AppConfig", [
+    "follow_links", "include_hidden", "as_list", "search"])
 
 
 def path_is_directory(single_path, follow_links=FOLLOW_LINKS_DEFAULT):
@@ -19,9 +22,9 @@ def path_is_directory(single_path, follow_links=FOLLOW_LINKS_DEFAULT):
 
 def filter_paths(
         path_list, follow_links=FOLLOW_LINKS_DEFAULT,
-        show_hidden=SHOW_HIDDEN_DEFAULT):
+        include_hidden=INCLUDE_HIDDEN_DEFAULT):
 
-    if show_hidden:
+    if include_hidden:
         return [
             item for item in path_list
             if path_is_directory(item, follow_links)]
@@ -45,14 +48,31 @@ def get_best_match(search, directories):
     return None
 
 
+def get_config_from_command_args():
+    parser = argparse.ArgumentParser(
+        description="Change the current working directory using "
+        "fuzzy string matching ")
+    parser.add_argument("-n", "--no-links", action="store_true")
+    parser.add_argument("-a", "--include-hidden", action="store_true")
+    parser.add_argument("-l", "--list", action="store_true")
+    parser.add_argument("search", nargs="?")
+    args = parser.parse_args()
+
+    return AppConfig(
+        follow_links=not args.no_links,
+        include_hidden=args.include_hidden,
+        as_list=args.list,
+        search=args.search)
+
+
 def main(config):
     path_list = os.listdir(".")
     directories = filter_paths(
-        path_list, config["follow_links"], config["show_hidden"])
+        path_list, config.follow_links, config.include_hidden)
     directories.sort()
 
-    if config["search"]:
-        match = get_best_match(config["search"], directories)
+    if config.search:
+        match = get_best_match(config.search, directories)
         if match:
             print("found: " + match)
             exit(0)
@@ -60,23 +80,10 @@ def main(config):
             print("No match")
             exit(1)
     else:
-        print_directories(directories, config["as_list"])
+        print_directories(directories, config.as_list)
         exit(0)
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Some app...")
-    parser.add_argument("-n", "--no-links", action="store_true")
-    parser.add_argument("-a", "--show-hidden", action="store_true")
-    parser.add_argument("-l", "--list", action="store_true")
-    parser.add_argument("search", nargs="?")
-    args = parser.parse_args()
-
-    app_config = {
-        "follow_links": not args.no_links,
-        "show_hidden": args.show_hidden,
-        "as_list": args.list,
-        "search": args.search,
-    }
-
+    app_config = get_config_from_command_args()
     main(app_config)
