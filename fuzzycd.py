@@ -34,11 +34,11 @@ def filter_paths(
         path_is_directory(item, follow_links)]
 
 
-def print_directories(directories, as_list=False):
+def get_print_directories(directories, as_list=False):
     separator = "\n" if as_list else "  "
     dirs_output = [d + "/" for d in directories]
     dirs_output = separator.join(dirs_output)
-    print(dirs_output)
+    return dirs_output
 
 
 def get_best_match(search, directories):
@@ -88,7 +88,8 @@ def main(config):
             print("No match")
             exit(1)
     else:
-        print_directories(directories, config.as_list)
+        output = get_print_directories(directories, config.as_list)
+        print(output)
         exit(0)
 
 
