@@ -42,16 +42,23 @@ optional arguments:
 **Example**
 
 ```
-# Current working directory is `~/test`
+# Current working directory is `~/Documents`
 
 # Print directories in curent working directory
-~/test $ f
-Something/  ThreeTest/  TwoPlusTwo/  four/  one/  three/  two/
+~/Documents $ f
+Something/  ThereThere/  TwoPlusTwo/  four/  one/  three/  two/
 
 # Change working directory
-~/test $ f tpt
+~/Documents $ f tpt
 
-# Current working directory is now `~/test/TwoPlusTwo`
+# Current working directory is now `~/Documents/TwoPlusTwo`
+```
+
+
+### Running the tests
+
+```
+python test.py -v
 ```
 
 
