@@ -74,6 +74,16 @@ class TestFuzzyCD(unittest.TestCase):
         self.assertFalse(
             path_is_directory(self.dir_link_path, follow_links=False))
 
+    def test_filter_paths_include_symlinks(self):
+        path_list = self.get_test_dir_path_list()
+        filtered_path_list = filter_paths(path_list, follow_links=True)
+        self.assertEqual(len(filtered_path_list), 5)
+
+    def test_filter_paths_exclude_symlinks(self):
+        path_list = self.get_test_dir_path_list()
+        filtered_path_list = filter_paths(path_list, follow_links=False)
+        self.assertEqual(len(filtered_path_list), 4)
+
     def test_filter_paths_include_hidden(self):
         path_list = self.get_test_dir_path_list()
         filtered_path_list = filter_paths(path_list, include_hidden=True)
