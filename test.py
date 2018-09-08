@@ -95,18 +95,16 @@ class TestFuzzyCD(unittest.TestCase):
         self.assertEqual(len(filtered_path_list), 5)
 
     def test_get_print_directories(self):
-        path_list = self.get_test_dir_path_list()
-        filtered_path_list = filter_paths(path_list, True, True)
-        output = get_print_directories(filtered_path_list)
+        path_list = ["one", "two", "three", "four"]
+        output = get_print_directories(path_list)
         output_list = output.split("  ")
-        self.assertEqual(len(output_list), 6)
+        self.assertEqual(len(output_list), 4)
 
     def test_get_print_directories_as_list(self):
-        path_list = self.get_test_dir_path_list()
-        filtered_path_list = filter_paths(path_list, True, True)
-        output = get_print_directories(filtered_path_list, as_list=True)
+        path_list = ["one", "two", "three", "four"]
+        output = get_print_directories(path_list, as_list=True)
         output_list = output.split("\n")
-        self.assertEqual(len(output_list), 6)
+        self.assertEqual(len(output_list), 4)
 
 
 if __name__ == "__main__":
