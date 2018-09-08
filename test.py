@@ -9,43 +9,51 @@ from fuzzycd import (
 )
 
 
+def touch(path):
+    with open(path, 'a'):
+        os.utime(path, None)
+
+
 class TestFuzzyCD(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        # Make directory
-        cls.temp_dir_path = tempfile.mkdtemp()
+        script_path = os.path.realpath(__file__)
+        script_dir_path = os.path.dirname(script_path)
+        test_dir_path = os.path.join(script_dir_path, "test_dir")
+        dir_link_path = os.path.join(test_dir_path, "dir_link")
+        file_path = os.path.join(test_dir_path, "some_file")
+        file_link_path = os.path.join(test_dir_path, "file_link")
 
-        # Make directory link
-        cls.temp_dir_path_link = cls.temp_dir_path + "_link"
-        os.symlink(cls.temp_dir_path, cls.temp_dir_path_link)
+        if not os.path.exists(test_dir_path):
+            os.mkdir(test_dir_path)
+            os.mkdir(os.path.join(test_dir_path, "one"))
+            os.mkdir(os.path.join(test_dir_path, "two"))
+            os.mkdir(os.path.join(test_dir_path, "three"))
+            four_dir_path = os.path.join(test_dir_path, "four")
+            os.mkdir(four_dir_path)
+            os.symlink(four_dir_path, dir_link_path)
+            touch(file_path)
+            os.symlink(file_path, file_link_path)
 
-        # Make regular file
-        temp_file, temp_file_path = tempfile.mkstemp()
-        cls.temp_file_path = temp_file_path
-
-    @classmethod
-    def tearDownClass(cls):
-        if cls.temp_dir_path:
-            shutil.rmtree(cls.temp_dir_path)
-        if cls.temp_dir_path_link:
-            os.remove(cls.temp_dir_path_link)
-        if cls.temp_file_path:
-            os.remove(cls.temp_file_path)
+        cls.test_dir_path = test_dir_path
+        cls.dir_link_path = dir_link_path
+        cls.file_path = file_path
+        cls.file_link_path = file_link_path
 
     def test_path_is_directory(self):
-        self.assertTrue(path_is_directory(self.temp_dir_path))
+        self.assertTrue(path_is_directory(self.test_dir_path))
 
     def test_path_is_directory_reject_file(self):
-        self.assertFalse(path_is_directory(self.temp_file_path))
+        self.assertFalse(path_is_directory(self.file_path))
 
     def test_path_is_directory_accept_symlink(self):
         self.assertTrue(
-            path_is_directory(self.temp_dir_path_link, follow_links=True))
+            path_is_directory(self.dir_link_path, follow_links=True))
 
     def test_path_is_directory_reject_symlink(self):
         self.assertFalse(
-            path_is_directory(self.temp_dir_path_link, follow_links=False))
+            path_is_directory(self.dir_link_path, follow_links=False))
 
 
 if __name__ == "__main__":
