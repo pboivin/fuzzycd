@@ -25,16 +25,18 @@ class TestFuzzyCD(unittest.TestCase):
         file_path = os.path.join(test_dir_path, "some_file")
         file_link_path = os.path.join(test_dir_path, "file_link")
 
-        if not os.path.exists(test_dir_path):
-            os.mkdir(test_dir_path)
-            os.mkdir(os.path.join(test_dir_path, "one"))
-            os.mkdir(os.path.join(test_dir_path, "two"))
-            os.mkdir(os.path.join(test_dir_path, "three"))
-            four_dir_path = os.path.join(test_dir_path, "four")
-            os.mkdir(four_dir_path)
-            os.symlink(four_dir_path, dir_link_path)
-            touch(file_path)
-            os.symlink(file_path, file_link_path)
+        if os.path.exists(test_dir_path):
+            shutil.rmtree(test_dir_path, ignore_errors=True)
+
+        os.mkdir(test_dir_path)
+        os.mkdir(os.path.join(test_dir_path, "one"))
+        os.mkdir(os.path.join(test_dir_path, "two"))
+        os.mkdir(os.path.join(test_dir_path, "three"))
+        four_dir_path = os.path.join(test_dir_path, "four")
+        os.mkdir(four_dir_path)
+        os.symlink(four_dir_path, dir_link_path)
+        touch(file_path)
+        os.symlink(file_path, file_link_path)
 
         cls.test_dir_path = test_dir_path
         cls.dir_link_path = dir_link_path
