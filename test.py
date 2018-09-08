@@ -5,8 +5,9 @@ import tempfile
 import unittest
 
 from fuzzycd import (
-    path_is_directory,
-)
+    path_is_directory, filter_paths)
+
+TEST_DIR = "test_dir"
 
 
 def touch(path):
@@ -20,28 +21,44 @@ class TestFuzzyCD(unittest.TestCase):
     def setUpClass(cls):
         script_path = os.path.realpath(__file__)
         script_dir_path = os.path.dirname(script_path)
-        test_dir_path = os.path.join(script_dir_path, "test_dir")
-        dir_link_path = os.path.join(test_dir_path, "dir_link")
-        file_path = os.path.join(test_dir_path, "some_file")
-        file_link_path = os.path.join(test_dir_path, "file_link")
+        test_dir_path = os.path.join(script_dir_path, TEST_DIR)
 
         if os.path.exists(test_dir_path):
-            shutil.rmtree(test_dir_path, ignore_errors=True)
+            shutil.rmtree(test_dir_path, ignore_errors=False)
 
+        # Root directory for tests
         os.mkdir(test_dir_path)
+        os.chdir(test_dir_path)
+
+        # 4 directories
         os.mkdir(os.path.join(test_dir_path, "one"))
         os.mkdir(os.path.join(test_dir_path, "two"))
         os.mkdir(os.path.join(test_dir_path, "three"))
         four_dir_path = os.path.join(test_dir_path, "four")
         os.mkdir(four_dir_path)
+
+        # 1 symlink to a directory
+        dir_link_path = os.path.join(test_dir_path, "dir_link")
         os.symlink(four_dir_path, dir_link_path)
+
+        # 1 hidden directory
+        os.mkdir(os.path.join(test_dir_path, ".hidden_dir"))
+
+        # 1 regular file and 1 symlink
+        file_path = os.path.join(test_dir_path, "some_file")
+        file_link_path = os.path.join(test_dir_path, "file_link")
         touch(file_path)
         os.symlink(file_path, file_link_path)
 
+        # Paths used in tests below
         cls.test_dir_path = test_dir_path
         cls.dir_link_path = dir_link_path
         cls.file_path = file_path
         cls.file_link_path = file_link_path
+
+    @classmethod
+    def get_test_dir_path_list(cls):
+        return os.listdir(cls.test_dir_path)
 
     def test_path_is_directory(self):
         self.assertTrue(path_is_directory(self.test_dir_path))
@@ -56,6 +73,16 @@ class TestFuzzyCD(unittest.TestCase):
     def test_path_is_directory_reject_symlink(self):
         self.assertFalse(
             path_is_directory(self.dir_link_path, follow_links=False))
+
+    def test_filter_paths_include_hidden(self):
+        path_list = self.get_test_dir_path_list()
+        filtered_path_list = filter_paths(path_list, include_hidden=True)
+        self.assertEqual(len(filtered_path_list), 6)
+
+    def test_filter_paths_exlude_hidden(self):
+        path_list = self.get_test_dir_path_list()
+        filtered_path_list = filter_paths(path_list, include_hidden=False)
+        self.assertEqual(len(filtered_path_list), 5)
 
 
 if __name__ == "__main__":
