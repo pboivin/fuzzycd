@@ -5,7 +5,7 @@ import tempfile
 import unittest
 
 from fuzzycd import (
-    path_is_directory, filter_paths, get_print_directories)
+    path_is_directory, filter_paths, get_print_directories, get_best_match)
 
 TEST_DIR = "test_dir"
 
@@ -105,6 +105,25 @@ class TestFuzzyCD(unittest.TestCase):
         output = get_print_directories(path_list, as_list=True)
         output_list = output.split("\n")
         self.assertEqual(len(output_list), 4)
+
+    def test_get_best_match(self):
+        path_list = [
+            "Desktop", "Documents", "Downloads", "Projects", "Everything Else",
+            "else"]
+        self.assertEqual(
+            "Desktop", get_best_match("desk", path_list))
+        self.assertEqual(
+            "Downloads", get_best_match("load", path_list))
+        self.assertEqual(
+            "else", get_best_match("else", path_list))
+        self.assertEqual(
+            "Documents", get_best_match("do", path_list))
+        self.assertEqual(
+            "Everything Else", get_best_match("something", path_list))
+
+    def test_get_best_match_no_match(self):
+        path_list = ["one", "two", "three"]
+        self.assertEqual(None, get_best_match("xyz", path_list))
 
 
 if __name__ == "__main__":
