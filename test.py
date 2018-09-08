@@ -5,7 +5,7 @@ import tempfile
 import unittest
 
 from fuzzycd import (
-    path_is_directory, filter_paths)
+    path_is_directory, filter_paths, get_print_directories)
 
 TEST_DIR = "test_dir"
 
@@ -93,6 +93,20 @@ class TestFuzzyCD(unittest.TestCase):
         path_list = self.get_test_dir_path_list()
         filtered_path_list = filter_paths(path_list, include_hidden=False)
         self.assertEqual(len(filtered_path_list), 5)
+
+    def test_get_print_directories(self):
+        path_list = self.get_test_dir_path_list()
+        filtered_path_list = filter_paths(path_list, True, True)
+        output = get_print_directories(filtered_path_list)
+        output_list = output.split("  ")
+        self.assertEqual(len(output_list), 6)
+
+    def test_get_print_directories_as_list(self):
+        path_list = self.get_test_dir_path_list()
+        filtered_path_list = filter_paths(path_list, True, True)
+        output = get_print_directories(filtered_path_list, as_list=True)
+        output_list = output.split("\n")
+        self.assertEqual(len(output_list), 6)
 
 
 if __name__ == "__main__":
