@@ -1,7 +1,5 @@
-from __future__ import print_function
 import os
 import shutil
-import tempfile
 import unittest
 
 from fuzzycd import (
