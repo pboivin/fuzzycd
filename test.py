@@ -110,16 +110,44 @@ class TestFuzzyCD(unittest.TestCase):
         path_list = [
             "Desktop", "Documents", "Downloads", "Projects", "Everything Else",
             "else"]
+
+        # Match beginning or end
         self.assertEqual(
             "Desktop", get_best_match("desk", path_list))
         self.assertEqual(
+            "Desktop", get_best_match("top", path_list))
+
+        # Match within
+        self.assertEqual(
             "Downloads", get_best_match("load", path_list))
         self.assertEqual(
-            "else", get_best_match("else", path_list))
+            "Everything Else", get_best_match("y", path_list))
+
+        # Full match
         self.assertEqual(
-            "Documents", get_best_match("do", path_list))
+            "else", get_best_match("else", path_list))
+
+        # Fuzzy match
         self.assertEqual(
             "Everything Else", get_best_match("something", path_list))
+        self.assertEqual(
+            "Documents", get_best_match("dos", path_list))
+        self.assertEqual(
+            "Downloads", get_best_match("dol", path_list))
+
+        # Case insensitive
+        self.assertEqual(
+            "Desktop", get_best_match("DESK", path_list))
+        self.assertEqual(
+            "Downloads", get_best_match("DOL", path_list))
+        self.assertEqual(
+            "else", get_best_match("Else", path_list))
+
+        # XXX Anomalies...
+        # - 'do' normally gets us 'Desktop', but 'Documents' seems more useful,
+        #   so a higher priority is given to exact matches at the beginning
+        self.assertEqual(
+            "Documents", get_best_match("do", path_list))
 
     def test_get_best_match_no_match(self):
         path_list = ["one", "two", "three"]

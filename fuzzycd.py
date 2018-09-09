@@ -1,10 +1,12 @@
 from __future__ import print_function
 import argparse
+import difflib
 import os
 from os import path
 from collections import namedtuple
 
-from fuzzywuzzy import process
+RATIO = "ratio"
+KEYWORD = "keyword"
 
 FOLLOW_LINKS_DEFAULT = True
 INCLUDE_HIDDEN_DEFAULT = False
@@ -41,10 +43,32 @@ def get_print_directories(directories, as_list=False):
     return dirs_output
 
 
+def _find_matches(search, items):
+    matches = []
+    for item in items:
+        # Give maximum priority for exact matches at the beginning
+        if item.startswith(search):
+            ratio = 1
+        else:
+            seq = difflib.SequenceMatcher(lambda x: x == " ", search, item)
+            ratio = round(seq.ratio(), 3)
+        matches.append({RATIO: ratio, KEYWORD: item})
+    matches = [m for m in matches if m[RATIO] > 0]
+    matches.sort(key=lambda m: m[RATIO], reverse=True)
+    return matches
+
+
 def get_best_match(search, directories):
-    match = process.extractOne(search, directories)
-    if match and match[1] > 0:
-        return match[0]
+    search = search.lower()
+    items_map = {d.lower(): d for d in directories}
+    matches = _find_matches(search, items_map.keys())
+    if matches:
+        best_ratio = matches[0][RATIO]
+        best_matches = [m for m in matches if m[RATIO] == best_ratio]
+        best_matches.sort(key=lambda x: x[KEYWORD])
+        keyword = best_matches[0][KEYWORD]
+        return items_map[keyword]
+
     return None
 
 
