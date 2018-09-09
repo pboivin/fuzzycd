@@ -52,9 +52,9 @@ def _find_matches(search, items):
         else:
             seq = difflib.SequenceMatcher(lambda x: x == " ", search, item)
             ratio = round(seq.ratio(), 3)
-        matches.append({RATIO: ratio, KEYWORD: item})
-    matches = [m for m in matches if m[RATIO] > 0]
-    matches.sort(key=lambda m: m[RATIO], reverse=True)
+        if ratio > 0:
+            matches.append({RATIO: ratio, KEYWORD: item})
+    matches.sort(key=lambda x: x[RATIO], reverse=True)
     return matches
 
 
@@ -68,7 +68,6 @@ def get_best_match(search, directories):
         best_matches.sort(key=lambda x: x[KEYWORD])
         keyword = best_matches[0][KEYWORD]
         return items_map[keyword]
-
     return None
 
 
