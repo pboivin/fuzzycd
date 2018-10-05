@@ -1,6 +1,18 @@
+# Find paths to python and script
+
+FUZZYCD_PYTHON="$(which python)"
+if [ "$FUZZYCD_PYTHON" == "" ]; then
+    FUZZYCD_PYTHON="$(which python3)"
+fi
+
+FUZZYCD_SCRIPT="$PWD/fuzzycd.py"
+
+
+# Generate helper script
+
 echo '
-FUZZYCD_PYTHON="'$(which python)'"
-FUZZYCD_SCRIPT="'$PWD'/fuzzycd.py"
+FUZZYCD_PYTHON="'$FUZZYCD_PYTHON'"
+FUZZYCD_SCRIPT="'$FUZZYCD_SCRIPT'"
 
 function f() {
     local output=$($FUZZYCD_PYTHON $FUZZYCD_SCRIPT $@)
