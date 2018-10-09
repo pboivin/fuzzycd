@@ -5,7 +5,7 @@ import unittest
 from fuzzycd import (
     path_is_directory, filter_paths, get_print_directories, get_best_match)
 
-TEST_DIR = "test_dir"
+TEST_DIR = "fixtures"
 
 
 def touch(path):
