@@ -24,4 +24,6 @@ function f() {
         echo "$output"
     fi
 }
+alias fa="f -a"
+alias ff="f -f"
 '
