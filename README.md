@@ -62,3 +62,5 @@ python test.py -v
 ### Disclaimer
 
 This is a work in progress :)
+
+[MIT License](https://github.com/pboi20/fuzzycd/blob/master/LICENSE)
