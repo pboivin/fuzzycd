@@ -12,7 +12,7 @@ FOLLOW_LINKS_DEFAULT = True
 INCLUDE_HIDDEN_DEFAULT = False
 
 AppConfig = namedtuple("AppConfig", [
-    "follow_links", "include_hidden", "as_list", "search"])
+    "follow_links", "include_hidden", "as_list", "search", "first"])
 
 
 def path_is_directory(single_path, follow_links=FOLLOW_LINKS_DEFAULT):
@@ -85,6 +85,9 @@ def get_config_from_command_args():
         "-l", "--list", action="store_true",
         help="use a newline-separated listing format")
     parser.add_argument(
+        "-f", "--first", action="store_true",
+        help="change to first directory without matching")
+    parser.add_argument(
         "search", nargs="?",
         help="the string to use for fuzzy matching")
     args = parser.parse_args()
@@ -93,6 +96,7 @@ def get_config_from_command_args():
         follow_links=not args.no_links,
         include_hidden=args.include_hidden,
         as_list=args.list,
+        first=args.first,
         search=args.search)
 
 
@@ -102,7 +106,13 @@ def main(config):
         path_list, config.follow_links, config.include_hidden)
     directories.sort()
 
-    if config.search:
+    if not directories:
+        print("No directories to jump to")
+        exit(1)
+    elif config.first:
+        print("found: " + directories[0])
+        exit(0)
+    elif config.search:
         match = get_best_match(config.search, directories)
         if match:
             print("found: " + match)
