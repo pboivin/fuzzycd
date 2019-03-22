@@ -5,6 +5,8 @@ import os
 from os import path
 from collections import namedtuple
 
+VERSION="0.1"
+
 RATIO = "ratio"
 KEYWORD = "keyword"
 
@@ -12,7 +14,8 @@ FOLLOW_LINKS_DEFAULT = True
 INCLUDE_HIDDEN_DEFAULT = False
 
 AppConfig = namedtuple("AppConfig", [
-    "follow_links", "include_hidden", "as_list", "search", "first"])
+    "version", "follow_links", "include_hidden", "as_list", "search", "first"
+])
 
 
 def path_is_directory(single_path, follow_links=FOLLOW_LINKS_DEFAULT):
@@ -76,6 +79,9 @@ def get_config_from_command_args():
         description="Change the current working directory using "
         "fuzzy string matching ")
     parser.add_argument(
+        "-v", "--version", action="store_true",
+        help="show version number and exit")
+    parser.add_argument(
         "-n", "--no-links", action="store_true",
         help="ignore symlinks")
     parser.add_argument(
@@ -93,6 +99,7 @@ def get_config_from_command_args():
     args = parser.parse_args()
 
     return AppConfig(
+        version=args.version,
         follow_links=not args.no_links,
         include_hidden=args.include_hidden,
         as_list=args.list,
@@ -105,6 +112,10 @@ def main(config):
     directories = filter_paths(
         path_list, config.follow_links, config.include_hidden)
     directories.sort()
+
+    if config.version:
+        print("fuzzycd version " + VERSION)
+        exit(0)
 
     if not directories:
         print("No directories to jump to")
