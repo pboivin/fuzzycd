@@ -46,7 +46,7 @@ alias f="fuzzycd"
 
 ```
 $ f -h
-usage: f [-h] [-n] [-a] [-l] [search]
+usage: f [-h] [-v] [-n] [-a] [-l] [-f] [search]
 
 Change the current working directory using fuzzy string matching
 
@@ -55,9 +55,11 @@ positional arguments:
 
 optional arguments:
   -h, --help            show this help message and exit
+  -v, --version         show version number and exit
   -n, --no-links        ignore symlinks
   -a, --include-hidden  include hidden files (ignored by default)
   -l, --list            use a newline-separated listing format
+  -f, --first           change to first directory without matching
 ```
 
 **Example**
