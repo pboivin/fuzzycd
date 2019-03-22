@@ -11,18 +11,42 @@
 ```
 git clone https://github.com/pboi20/fuzzycd.git
 cd fuzzycd
-bash make_helper.sh >> ~/.bashrc
-source ~/.bashrc
+sudo ./install.sh
 ```
 
-A bash function `f` is added to your shell configuration.
+If the installation succeeds, you will be prompted to add the following lines
+to your bash configuration:
+```
+export FUZZYCD_DIR="/usr/local/share/fuzzycd"
+[ -s "$FUZZYCD_DIR/fuzzycd_helper.sh" ] && \. "$FUZZYCD_DIR/fuzzycd_helper.sh"
+alias f="fuzzycd"
+```
+
+**Install Location**
+
+The default install location is `/usr/local/share/fuzzycd`.
+
+You can specify an alternative location with the `INSTALL_DIR` variable:
+```
+INSTALL_DIR="$HOME/.fuzzycd" ./install.sh
+```
+
+**Development**
+
+If you wish to run the script directly from the cloned git repository,
+set the `FUZZYCD_DIR` variable in your bash configuration accordingly:
+```
+export FUZZYCD_DIR="$HOME/code/fuzzycd"
+[ -s "$FUZZYCD_DIR/fuzzycd_helper.sh" ] && \. "$FUZZYCD_DIR/fuzzycd_helper.sh"
+alias f="fuzzycd"
+```
 
 
 ### Usage
 
 ```
 $ f -h
-usage: fuzzycd.py [-h] [-n] [-a] [-l] [search]
+usage: f [-h] [-n] [-a] [-l] [search]
 
 Change the current working directory using fuzzy string matching
 
